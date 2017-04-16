@@ -1,0 +1,47 @@
+/**
+A toolbar utility class
+Usage:
+<ul class="toolbar">
+  <li>...</li>
+</ul>
+
+Adjustment classes for toolbar <li> items:
+.align-right
+  This and the following items will be aligned to the right of the toolbar.
+
+.fluid
+  This item can increase in size to cover unused space.
+*/
+
+//Defines the default padding between items
+$item_padding: 5px;
+
+ul.toolbar{
+  list-style:none;
+  margin:0;
+  padding:0;
+
+  display:flex;
+  align-items:center;
+
+  li{
+    margin:0;
+    padding:0 $item_padding;
+
+    flex:0 0 auto;
+
+    &:last-child{
+      padding:0 0 0 $item_padding;
+    }
+    &:first-child{
+      padding:0 $item_padding 0 0;
+    }
+
+    &.toolbar--align-right{
+      margin-left:auto;
+    }
+    &.toolbar--fluid{
+      flex:1 0 auto;
+    }
+  }
+}

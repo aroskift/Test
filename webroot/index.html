@@ -7,7 +7,62 @@
   <link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
 <body class="app" data-bind="css: {'app--ready': true}">
-  <h1 data-bind="text: title"></h1>
+  <section>
+    <div class="tasklist">
+      <ul class="tasklist_header toolbar">
+        <li class="toolbar--fluid tasklist_title">
+          <input type="text" placeholder="Title"/>
+        </li>
+        <li class="toolbar--align-right">
+          <button title="Mark all tasks as done"><i class="material-icons">done_all</i></button>
+        </li>
+        <li>
+          <button title="Delete this list"><i class="material-icons">delete</i></button>
+        </li>
+      </ul>
+
+      <ul class="tasklist_tasks">
+        <li class="task">
+          <ul class="toolbar">
+            <li>
+              <input type="checkbox"/>
+            </li>
+            <li class="toolbar--fluid">
+              <input type="text" class="task_text" placeholder="New task"/>
+            </li>
+            <li class="task_deletebtn">
+              <button title="Delete this task"><i class="material-icons">cancel</i></button>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <ul class="listcards">
+      <li class="card">
+        <div class="card_title">A task list</div>
+        <ul class="card_tools toolbar">
+          <li>
+            <span>3</span>
+          </li>
+          <li class="toolbar--align-right">
+            <button title="Delete this list"><i class="material-icons">delete</i></button>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    <ul class="toolbar">
+      <li>
+        <button title="Add new task list"><i class="material-icons">note_add</i></button>
+      </li>
+      <li class="toolbar--align-right">
+        <button title="Delete every task list"><i class="material-icons">delete_forever</i></button>
+      </li>
+    </ul>
+  </footer>
 
   <script src="lib/knockout-3.4.2.js"></script>
   <script src="src/app.js"></script>

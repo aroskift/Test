@@ -3,16 +3,8 @@
  */
 class Task{
   constructor(){
-    this.ko_title = ko.observable();
     this.ko_text = ko.observable();
     this.ko_done = ko.observable(false);
-  }
-
-  get title(){
-    return this.ko_title();
-  }
-  set title(value){
-    this.ko_title(value);
   }
 
   get text(){
@@ -65,7 +57,6 @@ class TaskList{
  */
 class App{
   constructor(){
-    this.title = ko.observable('Hello World!');
   }
 
   static start({container = document.body} = {}){

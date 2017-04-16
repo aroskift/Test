@@ -1,0 +1,64 @@
+/**
+Contains minor stylings for different types of input.
+*/
+
+//Textboxes
+input[type="text"]{
+  border:1px solid rgba(0,0,0,0);
+  font-size:inherit;
+  outline:none;
+  padding:2px 3px;
+  width:100%;
+  &:focus{
+    border:1px solid rgba(0,0,0,0.5);
+  }
+}
+
+//Checkboxes
+input[type="checkbox"]{
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  appearance:none;
+  cursor:pointer;
+  color:rgba(0,0,0,0.7);
+  outline:none;
+
+  &:hover,&:active,&:focus{
+    color:rgba(0,0,0,1);
+  }
+  &:after{
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+  }
+  &:after{
+    content:'check_box_outline_blank';
+  }
+  &:checked:after{
+    content:'check_box';
+  }
+}
+
+//Buttons
+button{
+  border:none;
+  margin:0;
+  padding:0;
+  background:transparent;
+  cursor:pointer;
+  color:rgba(0,0,0,0.7);
+  outline:none;
+  &:hover,&:active,&:focus{
+    color:rgba(0,0,0,1);
+  }
+}
