@@ -16,22 +16,35 @@ body{
 
 .app{
   font-family:Roboto;
+  opacity:0;
+  transition:0.2s ease-out opacity;
+
   &, *{
     box-sizing:border-box;
   }
+
+  &--ready{
+    opacity:1;
+  }
 }
 
-section{
+.tasklists{
   flex:1 0 auto;
+  list-style:none;
+  margin:0;
+  padding:0 0 50px 0;
 }
 
 footer{
   flex:0 0 auto;
-
   padding:10px;
 
   border-top:1px solid rgba(0, 0, 0, 0.3);
+
+  .status{
+    text-align:center;
+    padding:0 10px;
+  }
 }
 
 @import '_tasklist.scss';
-@import '_listcards.scss';
