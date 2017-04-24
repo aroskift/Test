@@ -130,6 +130,30 @@ const isDescendantOf = function(el, selectorOrAncestor){
 }
 
 /**
+ * Class representing a service that can save/load sets of TaskList instances from a server
+ */
+class TaskListSetService{
+  constructor(){
+    this.endpoint = '/';
+    this.port = 8080;
+  }
+
+  getTaskListSets(){
+
+  }
+
+  hasTaskListSet(name){
+
+  }
+  loadTaskListSet(name){
+
+  }
+  saveTaskListSet(name, taskLists){
+
+  }
+}
+
+/**
  * The Todo app container class.
  */
 class App{
