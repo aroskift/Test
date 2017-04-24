@@ -30,7 +30,7 @@
               <input type="checkbox" data-bind="checked: ko_done"/>
             </li>
             <li class="toolbar--fluid">
-              <input type="text" class="task_text" placeholder="New task" data-bind="textInput: ko_text, disable: ko_done"/>
+              <input type="text" class="task_text" placeholder="New task" data-bind="textInput: ko_text, disable: ko_done, event: {keydown: $parent.evts.enterKeyInTask}"/>
             </li>
             <li class="task_deletebtn">
               <button title="Delete this task" data-bind="click: $parent.evts.removeTask"><i class="material-icons">cancel</i></button>

@@ -1,4 +1,43 @@
 /**
+ * Given an element 'el' checks if any ancestor node of this element matches the provided selector or is equal to the provided node.
+ * @param {Element} el The element to check ancestors for.
+ * @param {string|Element} selectorOrAncestor The CSS selector or node to check against.
+ * @return {boolean} True if el is descendant of the provided selector or node.
+ */
+const isDescendantOf = function(el, selectorOrAncestor){
+  const matcher = Element.prototype.matches || Element.prototype.msMatchesSelector;
+  let parent = el.parentElement;
+  while (!!parent){
+    if (selectorOrAncestor instanceof Element) {
+      if (selectorOrAncestor === parent) return true;
+    } else if (matcher.call(parent, selectorOrAncestor)) {
+      return true;
+    }
+    parent = parent.parentElement;
+  }
+  return false;
+};
+const friendlyNow = function(){
+  let now = new Date();
+  return ('0' + now.getHours()).slice(-2) 
+    + ':'
+    + ('0' + now.getMinutes()).slice(-2)
+    + ':'
+    + ('0' + now.getSeconds()).slice(-2);
+};
+const getFirstAncestor = function(el, selector){
+  const matcher = Element.prototype.matches || Element.prototype.msMatchesSelector;
+  let parent = el.parentElement;
+  while (!!parent){
+    if (matcher.call(parent, selector)) {
+      return parent;
+    }
+    parent = parent.parentElement;
+  }
+  return undefined;
+};
+
+/**
  * Class representing a single task
  */
 class Task{
@@ -58,7 +97,28 @@ class TaskList{
     this.evts = {
       markAllDone: () => { this.setAllDone(true); },
       addTask: () => { this.addTask() },
-      removeTask: (task, evt) => { evt.stopPropagation(); this.removeTask(task); }
+      removeTask: (task, evt) => { evt.stopPropagation(); this.removeTask(task); },
+      enterKeyInTask: (task, evt) => {
+        if (evt.keyCode === 13){ //Enter
+          if (this.tasks.indexOf(task) === this.tasks.length-1){
+            this.addTask();
+          }
+          let taskLi = getFirstAncestor(evt.target, '[data-module="task"]');
+          if (taskLi && taskLi.nextElementSibling){
+            taskLi.nextElementSibling.querySelector('input[type="text"]').focus();
+          }
+        } else if (evt.keyCode === 8){ //Backspace
+          if (task.isTextEmpty()){
+            let taskLi = getFirstAncestor(evt.target, '[data-module="task"]');
+            if (taskLi && taskLi.previousElementSibling){
+              taskLi.previousElementSibling.querySelector('input[type="text"]').focus();
+            }
+            this.removeTask(task);
+            return false;
+          }
+        }
+        return true;
+      }
     }
   }
 
@@ -131,34 +191,6 @@ const STATUS_TEXTS = {
 const REST_DEFAULT_HEADERS = {
   'Content-Type': 'application/json;charset=utf-8',
   'Accept': 'application/json'
-};
-
-/**
- * Given an element 'el' checks if any ancestor node of this element matches the provided selector or is equal to the provided node.
- * @param {Element} el The element to check ancestors for.
- * @param {string|Element} selectorOrAncestor The CSS selector or node to check against.
- * @return {boolean} True if el is descendant of the provided selector or node.
- */
-const isDescendantOf = function(el, selectorOrAncestor){
-  const matcher = Element.prototype.matches || Element.prototype.msMatchesSelector;
-  let parent = el.parentElement;
-  while (!!parent){
-    if (selectorOrAncestor instanceof Element) {
-      if (selectorOrAncestor === parent) return true;
-    } else if (matcher.call(parent, selectorOrAncestor)) {
-      return true;
-    }
-    parent = parent.parentElement;
-  }
-  return false;
-};
-const friendlyNow = function(){
-  let now = new Date();
-  return ('0' + now.getHours()).slice(-2) 
-    + ':'
-    + ('0' + now.getMinutes()).slice(-2)
-    + ':'
-    + ('0' + now.getSeconds()).slice(-2);
 };
 
 /**
