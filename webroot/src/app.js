@@ -98,6 +98,18 @@ class TaskList{
       markAllDone: () => { this.setAllDone(true); },
       addTask: () => { this.addTask() },
       removeTask: (task, evt) => { evt.stopPropagation(); this.removeTask(task); },
+      enterKeyInTaskTitle: (self, evt) => {
+        if (evt.keyCode === 13){ //Enter
+          if (this.tasks.length === 0){
+            this.addTask();
+          }
+          let taskListLi = getFirstAncestor(evt.target, '[data-module="tasklist"]');
+          if (taskListLi){
+            taskListLi.querySelector('[data-module="task"] input[type="text"]').focus();
+          }
+        }
+        return true;
+      },
       enterKeyInTask: (task, evt) => {
         if (evt.keyCode === 13){ //Enter
           if (this.tasks.indexOf(task) === this.tasks.length-1){
@@ -185,6 +197,7 @@ const REST_DEFAULT_HEADERS = {
   'Content-Type': 'application/json;charset=utf-8',
   'Accept': 'application/json'
 };
+const LOCAL_STORAGE_NAME_KEY = 'jsintro_todo_name';
 
 /**
  * Class representing a service that can save/load sets of TaskList instances from a server
@@ -253,7 +266,7 @@ class App{
 
     this.ko_taskLists = ko.observableArray(taskLists);
     this.ko_activeTaskList = ko.observable();
-    this.ko_name = ko.observable('');
+    this.ko_name = ko.observable(name || '');
 
     this.ko_statusText = ko.observable('Ready');
 
@@ -274,7 +287,7 @@ class App{
         return true;
       },
       setNameClick: () => {
-        let promptResult = prompt('Enter the name of this set of task lists');
+        let promptResult = prompt('Enter the name of this set of task lists', this.name);
         if (promptResult && !!(promptResult.trim())){
           this.ko_name(promptResult);
           this.ko_statusText('Name changed to "' + promptResult+'"');
@@ -288,6 +301,7 @@ class App{
     this.ko_raw_limited.subscribe(() => this.save());
 
     this._savingPromise = undefined;
+    this.onNameChanged(this.name); //Re-apply name as the subscription is added after it's set by the constructor argument (if applicable)
   }
 
   bind(){
@@ -340,12 +354,15 @@ class App{
   }
 
   save(){
+    localStorage.removeItem(LOCAL_STORAGE_NAME_KEY);
     if (!this.name) return Promise.resolve();
     if (this._savingPromise) return this._savingPromise;
 
     this.ko_statusText('Saving...');
+    localStorage.setItem(LOCAL_STORAGE_NAME_KEY, this.name);
 
     if (this.taskLists.length === 0){
+      localStorage.removeItem(LOCAL_STORAGE_NAME_KEY);
       this._savingPromise = this.taskListSetService.delete(this.name).then(() => {
         this._savingPromise = undefined;
         this.ko_statusText('Deleted "'+this.name+'"');
@@ -360,7 +377,8 @@ class App{
   }
 
   static start(config){
-    const appConfig = Object.assign({taskLists: []}, config);
+    const previousName = localStorage.getItem(LOCAL_STORAGE_NAME_KEY) || '';
+    const appConfig = Object.assign({taskLists: [], name: previousName}, config);
     const app = App.instance = new App(new TaskListSetService(), appConfig);
     app.bind();
     return app;
