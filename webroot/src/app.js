@@ -5,6 +5,7 @@ class Task{
   constructor({text = '', done = false} = {}){
     this.ko_text = ko.observable(text);
     this.ko_done = ko.observable(done);
+    this.ko_raw = ko.computed(() => this.raw);
   }
 
   /**
@@ -19,6 +20,12 @@ class Task{
   get done(){
     return ko.unwrap(this.ko_done);
   }
+  get raw(){
+    return {
+      text: this.text,
+      done: this.done
+    };
+  }
 
   setDone(done){
     done = done === false ? false : true;
@@ -32,8 +39,8 @@ class Task{
     return !this.text;
   }
 
-  static newFirstTask(){
-    return new Task({text: 'This is an incomplete task. Click the checkbox to complete it.'});
+  static newFromRaw(taskObject){
+    return new Task(taskObject);
   }
 }
 
@@ -46,6 +53,7 @@ class TaskList{
     this.ko_tasks = ko.observableArray(tasks);
 
     this.ko_allDone = ko.computed(this.allDone, this);
+    this.ko_raw = ko.computed(() => this.raw);
 
     this.evts = {
       markAllDone: () => { this.setAllDone(true); },
@@ -54,6 +62,9 @@ class TaskList{
     }
   }
 
+  get title(){
+    return ko.unwrap(this.ko_title);
+  }
   /**
    * Gets all task objects in this task list.
    * @return {Task[]} The Task objects as an array of tasks
@@ -63,6 +74,12 @@ class TaskList{
   }
   get nonEmptyTasks(){
     return this.tasks.filter(task => !task.isTextEmpty());
+  }
+  get raw(){
+    return {
+      title: this.title,
+      tasks: this.tasks.map(task => task.raw)
+    };
   }
 
   /**
@@ -93,11 +110,14 @@ class TaskList{
     return !this.tasks.some(task => !task.done);
   }
 
-  static newFirstTaskList(){
-    return new TaskList({title: 'This is a a task list', tasks: [Task.newFirstTask()]});
+  static newFromRaw(taskListObject){
+    return new TaskList({
+      title: taskListObject.title,
+      tasks: (taskListObject.tasks || []).map(Task.newFromRaw)
+    });
   }
-  static newTaskListWithEmptyTask(){
-    return new TaskList({tasks: [new Task()]});
+  static newFromRawSet(taskListObjects){
+    return taskListObjects.map(TaskList.newFromRaw);
   }
 }
 
@@ -107,6 +127,10 @@ const STATUS_TEXTS = {
   SAVING: "Saving...",
   STILL_SAVING: "Still saving...",
   SAVE_DONE: "Saved"
+};
+const REST_DEFAULT_HEADERS = {
+  'Content-Type': 'application/json;charset=utf-8',
+  'Accept': 'application/json'
 };
 
 /**
@@ -127,7 +151,15 @@ const isDescendantOf = function(el, selectorOrAncestor){
     parent = parent.parentElement;
   }
   return false;
-}
+};
+const friendlyNow = function(){
+  let now = new Date();
+  return ('0' + now.getHours()).slice(-2) 
+    + ':'
+    + ('0' + now.getMinutes()).slice(-2)
+    + ':'
+    + ('0' + now.getSeconds()).slice(-2);
+};
 
 /**
  * Class representing a service that can save/load sets of TaskList instances from a server
@@ -138,18 +170,49 @@ class TaskListSetService{
     this.port = 8080;
   }
 
-  getTaskListSets(){
-
+  list(){
+    return TaskListSetService.makeJsonRequest({
+      url: this.endpoint + 'taskLists'
+    });
   }
 
-  hasTaskListSet(name){
-
+  has(name){
+    return this.loadTaskListSet(TaskListSetService.makeSafeName(name))
+      .then(exists => true, notExists => false);
   }
-  loadTaskListSet(name){
-
+  load(name){
+    return TaskListSetService.makeJsonRequest({
+      url: this.endpoint + 'taskList/' + TaskListSetService.makeSafeName(name)
+    }).then(TaskList.newFromRawSet);
   }
-  saveTaskListSet(name, taskLists){
+  save(name, taskListSet){
+    return TaskListSetService.makeJsonRequest({
+      url: this.endpoint + 'taskList/' + TaskListSetService.makeSafeName(name),
+      method: 'POST',
+      body: taskListSet.map(taskList => taskList.raw)
+    });
+  }
+  delete(name){
+    return TaskListSetService.makeJsonRequest({
+      url: this.endpoint + 'taskList/' + TaskListSetService.makeSafeName(name),
+      method: 'DELETE'
+    });
+  }
 
+  static makeSafeName(name){
+    return (name+'').toLowerCase().replace(/[^a-z0-9]/ig, '');
+  }
+
+  static makeJsonRequest({url, method = 'GET', body = undefined, headers = REST_DEFAULT_HEADERS} = {}){
+    return fetch(url, {
+        method: method,
+        headers: headers,
+        body: !body ? body : JSON.stringify(body)
+      }).then(res => {
+        if (!res.ok) throw res;
+        return res.json();
+      }
+    );
   }
 }
 
@@ -159,11 +222,13 @@ class TaskListSetService{
 class App{
   //constructor(config = {}){
     //let {container = document.body, taskLists = []} = config;
-  constructor({container = document.body, taskLists = []} = {}){
+  constructor(taskListSetService, {container = document.body, taskLists = []} = {}){
+    this.taskListSetService = taskListSetService;
     this.container = container;
 
     this.ko_taskLists = ko.observableArray(taskLists);
     this.ko_activeTaskList = ko.observable();
+    this.ko_name = ko.observable('noname');
 
     this.ko_statusText = ko.observable(STATUS_TEXTS.OK);
 
@@ -182,8 +247,22 @@ class App{
           this.clearActiveTaskList();
         }
         return true;
+      },
+      setNameClick: () => {
+        let promptResult = prompt('Enter the name of this set of task lists');
+        if (promptResult && !!(promptResult.trim())){
+          this.ko_name(promptResult);
+          this.ko_statusText('Name changed to "' + promptResult+'"');
+        }
       }
-    }
+    };
+
+    this.ko_raw_limited = ko.computed(() => this.raw).extend({ rateLimit: { timeout: 1000, method: "notifyWhenChangesStop" } });
+
+    this.ko_name.subscribe(newName => this.onNameChanged(newName));
+    this.ko_raw_limited.subscribe(() => this.save());
+
+    this._savingPromise = undefined;
   }
 
   bind(){
@@ -202,9 +281,24 @@ class App{
   get activeTaskList(){
     return ko.unwrap(this.ko_activeTaskList);
   }
+  get name(){
+    return ko.unwrap(this.ko_name);
+  }
+  get raw(){
+    return this.taskLists.map(taskList => taskList.raw);
+  }
 
   static get STATUS_TEXTS(){
     return STATUS_TEXTS;
+  }
+
+  onNameChanged(newName){
+    if (!newName) return;
+    return this.taskListSetService.load(newName).then(taskListSet => {
+      this.ko_statusText('Loaded '+taskListSet.length+' tasks from '+newName);
+      this.ko_taskLists(taskListSet);
+      return taskListSet;
+    });
   }
 
   /**
@@ -212,7 +306,7 @@ class App{
    * @param {TaskList} [taskList=new TaskList] The task list to add or undefined to add a new blank task list
    */
   addTaskList(taskList){
-    this.ko_taskLists.push(taskList || TaskList.newTaskListWithEmptyTask());
+    this.ko_taskLists.push(taskList || new TaskList());
   }
   removeTaskList(taskList){
     this.ko_taskLists.remove(taskList);
@@ -224,9 +318,26 @@ class App{
     this.ko_activeTaskList(undefined);
   }
 
+  save(){
+    if (this._savingPromise) return this._savingPromise;
+    this.ko_statusText('Saving...');
+    if (this.taskLists.length === 0){
+      this._savingPromise = this.taskListSetService.delete(this.name).then(() => {
+        this._savingPromise = undefined;
+        this.ko_statusText('Deleted "'+this.name+'"');
+      });
+    } else {
+      this._savingPromise = this.taskListSetService.save(this.name, this.taskLists).then(() => {
+        this._savingPromise = undefined;
+        this.ko_statusText('Saved "'+this.name+'" @ '+friendlyNow());
+      });
+    }
+    return this._savingPromise;
+  }
+
   static start(config){
-    const appConfig = Object.assign({taskLists: [TaskList.newFirstTaskList()]}, config);
-    const app = App.instance = new App(appConfig);
+    const appConfig = Object.assign({taskLists: []}, config);
+    const app = App.instance = new App(new TaskListSetService(), appConfig);
     app.bind();
     return app;
   }

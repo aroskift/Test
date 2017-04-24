@@ -36,6 +36,7 @@ app.get('/tasklist/:name', (req, res) => {
     return;
   }
 
+  console.log('returing', taskListSets[name]);
   res.json(taskListSets[name]);
 });
 
