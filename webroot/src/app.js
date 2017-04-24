@@ -181,13 +181,6 @@ class TaskList{
   }
 }
 
-const STATUS_TEXTS = {
-  OK: "Everything's shiny ;)",
-  UNKNOWN_ERROR: "Somethings wrong somewhere...",
-  SAVING: "Saving...",
-  STILL_SAVING: "Still saving...",
-  SAVE_DONE: "Saved"
-};
 const REST_DEFAULT_HEADERS = {
   'Content-Type': 'application/json;charset=utf-8',
   'Accept': 'application/json'
@@ -254,15 +247,15 @@ class TaskListSetService{
 class App{
   //constructor(config = {}){
     //let {container = document.body, taskLists = []} = config;
-  constructor(taskListSetService, {container = document.body, taskLists = []} = {}){
+  constructor(taskListSetService, {container = document.body, name = '', taskLists = []} = {}){
     this.taskListSetService = taskListSetService;
     this.container = container;
 
     this.ko_taskLists = ko.observableArray(taskLists);
     this.ko_activeTaskList = ko.observable();
-    this.ko_name = ko.observable('noname');
+    this.ko_name = ko.observable('');
 
-    this.ko_statusText = ko.observable(STATUS_TEXTS.OK);
+    this.ko_statusText = ko.observable('Ready');
 
     this.evts = {
       addTaskList: () => { this.addTaskList(); },
@@ -351,8 +344,11 @@ class App{
   }
 
   save(){
+    if (!this.name) return Promise.resolve();
     if (this._savingPromise) return this._savingPromise;
+
     this.ko_statusText('Saving...');
+
     if (this.taskLists.length === 0){
       this._savingPromise = this.taskListSetService.delete(this.name).then(() => {
         this._savingPromise = undefined;
