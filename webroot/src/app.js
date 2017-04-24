@@ -313,10 +313,6 @@ class App{
     return this.taskLists.map(taskList => taskList.raw);
   }
 
-  static get STATUS_TEXTS(){
-    return STATUS_TEXTS;
-  }
-
   onNameChanged(newName){
     if (!newName) return;
     return this.taskListSetService.load(newName).then(taskListSet => {
