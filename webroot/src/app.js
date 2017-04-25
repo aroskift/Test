@@ -366,6 +366,9 @@ class App{
       this._savingPromise = this.taskListSetService.delete(this.name).then(() => {
         this._savingPromise = undefined;
         this.ko_statusText('Deleted "'+this.name+'"');
+      }, () => {
+        this._savingPromise = undefined;
+        this.ko_statusText('Ready')
       });
     } else {
       this._savingPromise = this.taskListSetService.save(this.name, this.taskLists).then(() => {
