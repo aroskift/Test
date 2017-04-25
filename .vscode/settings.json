@@ -1,13 +1,14 @@
 // Place your settings in this file to overwrite default and user settings.
 {
     "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/.DS_Store": true,
-    "node_modules/": true,
-    "deploy/": true,
-    ".vscode/": true,
-    "packageOut/": true
-  }
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/.DS_Store": true,
+      "node_modules/": true,
+      "deploy/": true,
+      ".vscode/": true,
+      "packageOut/": true,
+      "yarn.lock": true
+    }
 }
