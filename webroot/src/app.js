@@ -24,6 +24,19 @@ class App{
     this.ko_taskLists = ko.observableArray();
 
     this.ko_activeTaskList = ko.observable();
+
+    this.evts = {
+      setActiveTaskList: (taskList) => { this.ko_activeTaskList(taskList); },
+      addTaskList: () => { this.ko_taskLists.push(new TaskList()); }
+    };
+
+    this.testThis = (inst, evt) => {
+      
+    };
+  }
+
+  onTaskListTitleFocus(){
+
   }
 
   bind(){
