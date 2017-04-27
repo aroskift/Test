@@ -17,7 +17,7 @@
           <button title="Mark all tasks as done"><i class="material-icons">done_all</i></button>
         </li>
         <li>
-          <button title="Delete this list"><i class="material-icons">delete</i></button>
+          <button title="Delete this list" data-bind="click: $parent.evts.removeTaskList"><i class="material-icons">delete</i></button>
         </li>
       </ul>
 
@@ -36,6 +36,10 @@
           </ul>
         </li>
       </ul>
+
+      <div class="tasklist_add">
+        <button title="Add new task" data-bind="click: evts.addTaskClick"><i class="material-icons">add_circle</i></button>
+      </div>
     </li>
   </ul>
 
