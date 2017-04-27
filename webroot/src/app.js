@@ -1,3 +1,15 @@
+const getFirstAncestor = function(el, selector){
+  const matcher = Element.prototype.matches || Element.prototype.msMatchesSelector;
+  let parent = el.parentElement;
+  while (!!parent){
+    if (matcher.call(parent, selector)) {
+      return parent;
+    }
+    parent = parent.parentElement;
+  }
+  return undefined;
+};
+
 class Task{
   constructor(){
     this.ko_text = ko.observable('');
@@ -18,7 +30,15 @@ class TaskList{
     this.ko_tasks = ko.observableArray();
 
     this.evts = {
-      addTaskClick: () => { this.addTask(); }
+      addTaskClick: () => { this.addTask(); },
+      addTaskOnEnter: (taskList, evt) => {
+        if (evt.keyCode === 13){
+          if (this.ko_tasks().length == 0){
+            this.addTask();
+          }
+          //Set focus
+        }
+      }
     };
   }
 
