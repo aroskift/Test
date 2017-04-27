@@ -16,6 +16,14 @@ class TaskList{
   constructor(){
     this.ko_title = ko.observable('');
     this.ko_tasks = ko.observableArray();
+
+    this.evts = {
+      addTaskClick: () => { this.addTask(); }
+    };
+  }
+
+  addTask(){
+    this.ko_tasks.push(new Task());
   }
 }
 
@@ -27,7 +35,11 @@ class App{
 
     this.evts = {
       setActiveTaskList: (taskList) => { this.ko_activeTaskList(taskList); },
-      addTaskList: () => { this.ko_taskLists.push(new TaskList()); }
+      addTaskList: () => { this.ko_taskLists.push(new TaskList()); },
+      removeTaskList: (taskList) => { 
+        this.ko_taskLists.remove(taskList);
+        this.ko_activeTaskList(undefined);
+      }
     };
 
     this.testThis = (inst, evt) => {
