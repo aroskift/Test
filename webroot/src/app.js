@@ -22,6 +22,10 @@ class Task{
   get done(){
     return this.ko_done();
   }
+
+  set done(value){
+    this.ko_done( value === undefined ? true : value );
+  }
 }
 
 class TaskList{
@@ -55,6 +59,10 @@ class TaskList{
           
           this.ko_focusedTask(focusableTask);
         }
+      },
+      removeTask: (task) => { this.ko_tasks.remove(task); },
+      selectAllTasks: () => {
+        this.ko_tasks().forEach(task => task.done = true);
       }
     };
   }
@@ -77,6 +85,10 @@ class App{
       addTaskList: () => { this.ko_taskLists.push(new TaskList()); },
       removeTaskList: (taskList) => { 
         this.ko_taskLists.remove(taskList);
+        this.ko_activeTaskList(undefined);
+      },
+      clearTaskLists: () => { 
+        this.ko_taskLists([]);
         this.ko_activeTaskList(undefined);
       }
     };

@@ -14,7 +14,7 @@
           <input class="tasklist_title" type="text" placeholder="New task list" data-bind="textInput: ko_title, event: {'focus': $root.evts.setActiveTaskList, 'keyup': evts.addTaskOnEnter }"/>
         </li>
         <li class="toolbar--align-right">
-          <button title="Mark all tasks as done"><i class="material-icons">done_all</i></button>
+          <button title="Mark all tasks as done" data-bind="click: evts.selectAllTasks"><i class="material-icons">done_all</i></button>
         </li>
         <li>
           <button title="Delete this list" data-bind="click: $parent.evts.removeTaskList"><i class="material-icons">delete</i></button>
@@ -34,7 +34,7 @@
                 event: { 'keyup': $parent.evts.newTaskOnTaskEnter }"/>
             </li>
             <li class="task_deletebtn">
-              <button title="Delete this task"><i class="material-icons">cancel</i></button>
+              <button title="Delete this task" data-bind="click: $parent.evts.removeTask"><i class="material-icons">cancel</i></button>
             </li>
           </ul>
         </li>
@@ -58,7 +58,7 @@
         <button title="Set the name of this task set"><i class="material-icons">featured_play_list</i></button>
       </li>
       <li>
-        <button title="Delete every task list"><i class="material-icons">delete_forever</i></button>
+        <button title="Delete every task list" data-bind="click: evts.clearTaskLists"><i class="material-icons">delete_forever</i></button>
       </li>
     </ul>
   </footer>
