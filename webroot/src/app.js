@@ -29,21 +29,26 @@ class TaskList{
     this.ko_title = ko.observable('');
     this.ko_tasks = ko.observableArray();
 
+    this.ko_focusedTask = ko.observable();
+
     this.evts = {
       addTaskClick: () => { this.addTask(); },
       addTaskOnEnter: (taskList, evt) => {
         if (evt.keyCode === 13){
+          let newTask;
           if (this.ko_tasks().length == 0){
-            this.addTask();
+            newTask = this.addTask();
           }
-          //Set focus
+          this.ko_focusedTask( newTask || this.ko_tasks()[0] );
         }
       }
     };
   }
 
   addTask(){
-    this.ko_tasks.push(new Task());
+    let newTask = new Task();
+    this.ko_tasks.push(newTask);
+    return newTask;
   }
 }
 
