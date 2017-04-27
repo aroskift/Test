@@ -11,7 +11,7 @@
     <li class="tasklist" data-bind="css: {'tasklist--open': $data === $root.ko_activeTaskList()}">
       <ul class="tasklist_header toolbar">
         <li class="toolbar--fluid">
-          <input class="tasklist_title" type="text" placeholder="New task list" data-bind="textInput: ko_title, event: {'focus': $root.evts.setActiveTaskList }"/>
+          <input class="tasklist_title" type="text" placeholder="New task list" data-bind="textInput: ko_title, event: {'focus': $root.evts.setActiveTaskList, 'keyup': evts.addTaskOnEnter }"/>
         </li>
         <li class="toolbar--align-right">
           <button title="Mark all tasks as done"><i class="material-icons">done_all</i></button>
