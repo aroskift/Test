@@ -41,6 +41,20 @@ class TaskList{
           }
           this.ko_focusedTask( newTask || this.ko_tasks()[0] );
         }
+      },
+      newTaskOnTaskEnter: (task, evt) => {
+        if (evt.keyCode === 13){
+          let taskIndex = this.ko_tasks.indexOf(task);
+          let focusableTask;
+
+          if (taskIndex < this.ko_tasks().length-1){
+            focusableTask = this.ko_tasks()[taskIndex+1];
+          } else {
+            focusableTask = this.addTask();
+          }
+          
+          this.ko_focusedTask(focusableTask);
+        }
       }
     };
   }

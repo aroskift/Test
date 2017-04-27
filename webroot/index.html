@@ -28,7 +28,10 @@
               <input type="checkbox" data-bind="checked: ko_done"/>
             </li>
             <li class="toolbar--fluid">
-              <input type="text" class="task_text" placeholder="New task" data-bind="textInput: ko_text, disable: ko_done, hasFocus: $data === $parent.ko_focusedTask()"/>
+              <input type="text" class="task_text" placeholder="New task" data-bind="textInput: ko_text,
+                disable: ko_done,
+                hasFocus: $data === $parent.ko_focusedTask(),
+                event: { 'keyup': $parent.evts.newTaskOnTaskEnter }"/>
             </li>
             <li class="task_deletebtn">
               <button title="Delete this task"><i class="material-icons">cancel</i></button>
