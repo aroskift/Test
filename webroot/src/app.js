@@ -77,6 +77,9 @@ class TaskList{
 class App{
   constructor(){
     this.ko_taskLists = ko.observableArray();
+    this.ko_taskListsName = ko.observable('');
+
+    this.ko_statusText = ko.observable('Ready!');
 
     this.ko_activeTaskList = ko.observable();
 
@@ -90,16 +93,23 @@ class App{
       clearTaskLists: () => { 
         this.ko_taskLists([]);
         this.ko_activeTaskList(undefined);
+      },
+      onBodyClickCloseOpenTaskList: (app, evt) => {
+        this.ko_activeTaskList(null);
+      },
+      preventBublingEvent: (app, evt) => {
+        evt.stopPropagation();
+      },
+      setTaskListsName: () => {
+        let promptResult = prompt('Enter a name for the set of task lists', this.ko_taskListsName());
+        if (!promptResult){
+          return;
+        }
+        
+        this.ko_taskListsName(promptResult);
+        this.ko_statusText('Name changed to "'+promptResult+'"');
       }
     };
-
-    this.testThis = (inst, evt) => {
-      
-    };
-  }
-
-  onTaskListTitleFocus(){
-
   }
 
   bind(){
