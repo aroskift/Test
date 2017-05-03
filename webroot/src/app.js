@@ -1,15 +1,3 @@
-const getFirstAncestor = function(el, selector){
-  const matcher = Element.prototype.matches || Element.prototype.msMatchesSelector;
-  let parent = el.parentElement;
-  while (!!parent){
-    if (matcher.call(parent, selector)) {
-      return parent;
-    }
-    parent = parent.parentElement;
-  }
-  return undefined;
-};
-
 class Task{
   constructor({text = '', done = false} = {}){
     this.ko_text = ko.observable(text);
@@ -128,22 +116,39 @@ class App{
         this.ko_statusText('Name changed to "'+promptResult+'"');
       }
     };
+
+    this.ko_objectValue = ko.computed(() => this.toObject()).extend({ rateLimit: { timeout: 1000, method: "notifyWhenChangesStop" } });
+    this.ko_objectValue.subscribe((modelData) => this.save(modelData));
   }
 
   bind(){
     ko.applyBindings(this);
   }
 
+  save(modelData){
+    return fetch('/tasklists/'+this.ko_taskListsName(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(modelData)
+    });
+  }
+
+  get asObject(){
+    return this.toObject();
+  }
+  set asObject(obj){
+    this.fromObject(obj);
+  }
+
   fromObject({name = '', taskLists = []} = {}){
     this.ko_taskLists(taskLists.map( taskListObject => new TaskList(taskListObject) ));
     this.ko_taskListsName(name);
   }
-
   toObject(){
     return {
       name: this.ko_taskListsName(),
       taskLists: this.ko_taskLists().map(taskList => taskList.toObject())
-    }
+    };
   }
 
   static start(){
