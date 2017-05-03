@@ -11,9 +11,9 @@ const getFirstAncestor = function(el, selector){
 };
 
 class Task{
-  constructor(){
-    this.ko_text = ko.observable('');
-    this.ko_done = ko.observable(false);
+  constructor({text = '', done = false} = {}){
+    this.ko_text = ko.observable(text);
+    this.ko_done = ko.observable(!!done);
   }
 
   get text(){
@@ -26,12 +26,23 @@ class Task{
   set done(value){
     this.ko_done( value === undefined ? true : value );
   }
+
+  toObject(){
+    return {
+      text: this.text,
+      done: this.done
+    };
+  }
+
+  static fromObject(taskObject){
+    return new Task(taskObject);
+  }
 }
 
 class TaskList{
-  constructor(){
-    this.ko_title = ko.observable('');
-    this.ko_tasks = ko.observableArray();
+  constructor({title = '', tasks = []} = {}){
+    this.ko_title = ko.observable(title);
+    this.ko_tasks = ko.observableArray(tasks.map(Task.fromObject));
 
     this.ko_focusedTask = ko.observable();
 
@@ -72,6 +83,13 @@ class TaskList{
     this.ko_tasks.push(newTask);
     return newTask;
   }
+
+  toObject(){
+    return {
+      title: this.ko_title(),
+      tasks: this.ko_tasks().map(task => task.toObject())
+    }
+  }
 }
 
 class App{
@@ -105,7 +123,7 @@ class App{
         if (!promptResult){
           return;
         }
-        
+
         this.ko_taskListsName(promptResult);
         this.ko_statusText('Name changed to "'+promptResult+'"');
       }
@@ -114,6 +132,18 @@ class App{
 
   bind(){
     ko.applyBindings(this);
+  }
+
+  fromObject({name = '', taskLists = []} = {}){
+    this.ko_taskLists(taskLists.map( taskListObject => new TaskList(taskListObject) ));
+    this.ko_taskListsName(name);
+  }
+
+  toObject(){
+    return {
+      name: this.ko_taskListsName(),
+      taskLists: this.ko_taskLists().map(taskList => taskList.toObject())
+    }
   }
 
   static start(){
