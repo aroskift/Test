@@ -6,9 +6,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
-<body class="app" data-bind="css: {'app--ready': true}">
+<body class="app" data-bind="css: {'app--ready': true}, click: evts.onBodyClickCloseOpenTaskList">
   <ul class="tasklists" data-bind="foreach: ko_taskLists">
-    <li class="tasklist" data-bind="css: {'tasklist--open': $data === $root.ko_activeTaskList()}">
+    <li class="tasklist" data-bind="css: {'tasklist--open': $data === $root.ko_activeTaskList()}, click: $parent.evts.preventBublingEvent">
       <ul class="tasklist_header toolbar">
         <li class="toolbar--fluid">
           <input class="tasklist_title" type="text" placeholder="New task list" data-bind="textInput: ko_title, event: {'focus': $root.evts.setActiveTaskList, 'keyup': evts.addTaskOnEnter }"/>
@@ -21,6 +21,7 @@
         </li>
       </ul>
 
+      <!-- ko if: $data === $root.ko_activeTaskList() -->
       <ul class="tasklist_tasks" data-bind="foreach: ko_tasks">
         <li class="task" data-bind="css: {'task--done': ko_done}">
           <ul class="toolbar">
@@ -39,6 +40,7 @@
           </ul>
         </li>
       </ul>
+      <!-- /ko -->
 
       <div class="tasklist_add">
         <button title="Add new task" data-bind="click: evts.addTaskClick"><i class="material-icons">add_circle</i></button>
@@ -51,11 +53,11 @@
       <li>
         <button title="Add new task list" data-bind="event: {'click': evts.addTaskList}"><i class="material-icons">note_add</i></button>
       </li>
-      <li>
-        
+      <li class="status toolbar--fluid">
+        <span data-bind="text: ko_statusText"></span>
       </li>
       <li>
-        <button title="Set the name of this task set"><i class="material-icons">featured_play_list</i></button>
+        <button title="Set the name of this task set" data-bind="click: evts.setTaskListsName"><i class="material-icons">featured_play_list</i></button>
       </li>
       <li>
         <button title="Delete every task list" data-bind="click: evts.clearTaskLists"><i class="material-icons">delete_forever</i></button>
