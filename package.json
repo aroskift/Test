@@ -9,7 +9,8 @@
   "scripts": {
     "eslint:watch": "esw --color -w src/**/*.js ",
     "eslint": "eslint --color src/**/*.js",
-    "start": "npm run eslint && webpack-dev-server"
+    "start:dev": "webpack-dev-server",
+    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:dev\""
   },
   "dependencies": {
     "knockout": "^3.4.2"
@@ -18,6 +19,7 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
+    "concurrently": "^3.5.0",
     "css-loader": "^0.28.5",
     "eslint": "^4.5.0",
     "eslint-plugin-import": "^2.7.0",

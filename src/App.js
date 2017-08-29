@@ -1,5 +1,3 @@
-import Todo from './components/Todo';
-
 import './App.scss';
 
 class App{
