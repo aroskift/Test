@@ -6,65 +6,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="styles/styles.css">
 </head>
-<body class="app" data-bind="css: {'app--ready': true}, click: evts.onBodyClickCloseOpenTaskList">
-  <ul class="tasklists" data-bind="foreach: ko_taskLists">
-    <li class="tasklist" data-bind="css: {'tasklist--open': $data === $root.ko_activeTaskList()}, click: $parent.evts.preventBublingEvent">
-      <ul class="tasklist_header toolbar">
-        <li class="toolbar--fluid">
-          <input class="tasklist_title" type="text" placeholder="New task list" data-bind="textInput: ko_title, event: {'focus': $root.evts.setActiveTaskList, 'keyup': evts.addTaskOnEnter }"/>
-        </li>
-        <li class="toolbar--align-right">
-          <button title="Mark all tasks as done" data-bind="click: evts.selectAllTasks"><i class="material-icons">done_all</i></button>
-        </li>
-        <li>
-          <button title="Delete this list" data-bind="click: $parent.evts.removeTaskList"><i class="material-icons">delete</i></button>
-        </li>
-      </ul>
-
-      <!-- ko if: $data === $root.ko_activeTaskList() -->
-      <ul class="tasklist_tasks" data-bind="foreach: ko_tasks">
-        <li class="task" data-bind="css: {'task--done': ko_done}">
-          <ul class="toolbar">
-            <li>
-              <input type="checkbox" data-bind="checked: ko_done"/>
-            </li>
-            <li class="toolbar--fluid">
-              <input type="text" class="task_text" placeholder="New task" data-bind="textInput: ko_text,
-                disable: ko_done,
-                hasFocus: $data === $parent.ko_focusedTask(),
-                event: { 'keyup': $parent.evts.newTaskOnTaskEnter }"/>
-            </li>
-            <li class="task_deletebtn">
-              <button title="Delete this task" data-bind="click: $parent.evts.removeTask"><i class="material-icons">cancel</i></button>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <!-- /ko -->
-
-      <div class="tasklist_add">
-        <button title="Add new task" data-bind="click: evts.addTaskClick"><i class="material-icons">add_circle</i></button>
-      </div>
-    </li>
-  </ul>
-
-  <footer>
-    <ul class="toolbar">
-      <li>
-        <button title="Add new task list" data-bind="event: {'click': evts.addTaskList}"><i class="material-icons">note_add</i></button>
-      </li>
-      <li class="status toolbar--fluid">
-        <span data-bind="text: ko_statusText"></span>
-      </li>
-      <li>
-        <button title="Set the name of this task set" data-bind="click: evts.setTaskListsName"><i class="material-icons">featured_play_list</i></button>
-      </li>
-      <li>
-        <button title="Delete every task list" data-bind="click: evts.clearTaskLists"><i class="material-icons">delete_forever</i></button>
-      </li>
-    </ul>
-  </footer>
-
   <script src="lib/knockout-3.4.2.js"></script>
   <script src="src/app.js"></script>
   <script>

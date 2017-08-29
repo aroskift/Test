@@ -1,18 +1,17 @@
 {
-  "name": "jsIntroCourse",
-  "version": "1.0.0",
-  "description": "Introductory course in basic JavaScript",
+  "name": "js-intro-course",
+  "version": "2.0.0",
+  "description": "Source code for Introductory course in basic JavaScript",
   "main": "index.js",
   "repository": "https://github.com/rudfoss/jsIntroCourse",
   "author": "Thomas Haugland Rudfoss",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2"
+    "express": "latest"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-sass": "^3.1.0",
-    "gulp-sourcemaps": "^2.6.0"
+    "gulp": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest"
   }
 }
