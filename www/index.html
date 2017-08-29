@@ -4,8 +4,39 @@
   <title>Todo</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    body{opacity:0;}
+  </style>
 </head>
-<body>
+<body data-bind="css: {'ready': true}">
+  <!-- Now we are in the context of the outermost model (the App instance) -->
+
+  <div class="lists-container">
+    <button class="new-list" data-bind="click: evts.onNewListClick"><i class="material-icons">add_circle</i></button>
+    <ul class="lists" data-bind="foreach: lists">
+      <!-- Now we are in the context of a single TodoList instance -->
+      <li data-bind="css: {'open': $data === $parent.openList()}">
+        <button data-bind="text: title, click: $parent.evts.onListClick"></button>
+      </li>
+    </ul>
+  </div>
+
+  <div class="list-container" data-bind="with: openList">
+    <!-- Now we are in the context of a single TodoList instance -->
+    <input type="text" placeholder="Title" data-bind="textInput: title"/>
+    <ul class="items">
+      <!-- ko foreach: items -->
+      <li class="item">
+        <input type="checkbox"/>
+        <input type="text"/>
+      </li>
+      <!-- /ko -->
+      <li class="new-item">
+        <input type="text"/>
+      </li>
+    </ul>
+  </div>
+
   <script src="bundle.js"></script>
 </body>
 </html>

@@ -1,4 +1,35 @@
+*{
+  box-sizing:border-box;
+  font-family:Roboto;
+}
 body, html{
   margin:0;
   padding:0;
+  height:100%;
 }
+
+body{
+  display:flex;
+  transition:0.2s ease-in opacity;
+}
+body.ready{
+  opacity:1;
+}
+
+button{
+  background-color:rgba(0,0,0,0);
+  transition:0.2s ease-in-out background-color;
+  &:hover{
+    background-color:rgba(0,0,0,0.1);
+  }
+}
+
+.lists-container{
+  flex:0 1 300px;
+  border-right:1px solid #bbb;
+}
+.list-container{
+  flex:1 1 auto;
+}
+
+@import './styles/todoListContainer.scss';
