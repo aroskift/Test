@@ -7,6 +7,8 @@
   "author": "Thomas Haugland Rudfoss",
   "license": "MIT",
   "scripts": {
+    "eslint:watch": "esw --color -w src/**/*.js ",
+    "eslint": "eslint --color src/**/*.js",
     "start": "node_modules/.bin/webpack-dev-server"
   },
   "dependencies": {
@@ -17,6 +19,9 @@
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "css-loader": "^0.28.5",
+    "eslint": "^4.5.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-watch": "^3.1.2",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
