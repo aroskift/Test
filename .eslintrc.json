@@ -19,6 +19,7 @@
     "eqeqeq": ["warn", "smart"],
     "semi": [2, "always"],
     "no-debugger": 2,
+    "no-unused-vars": 0,
     "import/no-named-as-default": 0
   }
 }
