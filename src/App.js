@@ -7,7 +7,6 @@ class App{
   }
 
   start(){
-    this.todo = new Todo();
     console.log('app starting');
   }
 }

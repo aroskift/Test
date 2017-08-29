@@ -9,7 +9,7 @@
   "scripts": {
     "eslint:watch": "esw --color -w src/**/*.js ",
     "eslint": "eslint --color src/**/*.js",
-    "start": "node_modules/.bin/webpack-dev-server"
+    "start": "npm run eslint && webpack-dev-server"
   },
   "dependencies": {
     "knockout": "^3.4.2"
