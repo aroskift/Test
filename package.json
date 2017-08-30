@@ -7,12 +7,17 @@
   "author": "Thomas Haugland Rudfoss",
   "license": "MIT",
   "scripts": {
-    "eslint:watch": "esw --color -w src/**/*.js ",
-    "eslint": "eslint --color src/**/*.js",
+    "eslint:watch": "esw --color -w ./**/*.js ",
+    "eslint": "eslint --color ./**/*.js",
+    "start:api": "node api/api.js",
+    "start:quietdev": "webpack-dev-server --quiet",
     "start:dev": "webpack-dev-server",
-    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:dev\""
+    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:dev\" \"npm run start:api\""
   },
   "dependencies": {
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "helmet": "^3.8.1",
     "knockout": "^3.4.2"
   },
   "devDependencies": {
