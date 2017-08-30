@@ -1,12 +1,15 @@
 import {observable, observableArray, computed, applyBindings} from 'knockout';
+import StorageService from './services/StorageService';
 import LoginBox from './components/LoginBox';
 import TodoList from './components/TodoList';
 
 import './App.scss';
 
 class App{
-  constructor(){
-    this.loginBox = new LoginBox();
+  constructor({loginBox, storageService} = {}){
+    this.loginBox = loginBox;
+    this.storageService = storageService;
+
     this.isLoggedIn = observable(false);
 
     this.lists = observableArray();
@@ -63,9 +66,16 @@ class App{
     this.lists.remove(todoList);
   }
 
-  start(){
+  bind(){
     applyBindings(this);
     return this;
   }
+
+  static start(){
+    return new App({
+      loginBox: new LoginBox(),
+      storageService: new StorageService()
+    }).bind();
+  }
 }
-window._app = new App().start();
+window._app = App.start();
