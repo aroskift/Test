@@ -6,12 +6,9 @@ body, html{
   margin:0;
   padding:0;
   height:100%;
-}
-
-body{
-  display:flex;
   transition:0.2s ease-in opacity;
 }
+
 body.ready{
   opacity:1;
 }
@@ -21,6 +18,19 @@ button{
   transition:0.2s ease-in-out background-color;
   &:hover{
     background-color:rgba(0,0,0,0.1);
+  }
+}
+
+.list-manager{
+  display:none;
+  height:100%;
+}
+body.loggedin {
+  .loginbox{
+    display:none;
+  }
+  .list-manager{
+    display:flex;
   }
 }
 
