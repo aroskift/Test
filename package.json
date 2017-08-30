@@ -12,7 +12,7 @@
     "start:api": "node api/api.js",
     "start:quietdev": "webpack-dev-server --quiet",
     "start:dev": "webpack-dev-server",
-    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:dev\" \"npm run start:api\""
+    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:quietdev\" \"npm run start:api\""
   },
   "dependencies": {
     "cors": "^2.8.4",

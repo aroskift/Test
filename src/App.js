@@ -17,21 +17,27 @@ class App{
   newList(model, evt){
     const newList = new TodoList();
     this.lists.push(newList);
-    if (!this.openList()){
-      this.openList(newList);
-    }
+    this.openList(newList);
   }
   selectOpenList(todoList, evt){
     if (evt.ctrlKey){
-      if (confirm('Are you sure you want to delete this list?')){
-        this.lists.remove(todoList);
-        if (this.openList() === todoList){
-          this.openList(this.lists()[0]);
-        }
-      }
+      this.removeTodoList(todoList, !evt.shiftKey);
       return;
     }
     this.openList(todoList);
+  }
+
+  removeTodoList(todoList, confirmDelete = true){
+    if (confirmDelete){
+      if (!confirm('Are you sure you want to delete this list?')){
+        return;
+      }
+    }
+    let listIndex = this.lists.indexOf(todoList);
+    if (this.openList() === todoList){
+      this.openList(this.lists()[listIndex+1]);
+    }
+    this.lists.remove(todoList);
   }
 
   start(){

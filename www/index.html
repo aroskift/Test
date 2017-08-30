@@ -12,11 +12,17 @@
   <!-- Now we are in the context of the outermost model (the App instance) -->
 
   <div class="lists-container">
-    <button class="new-list" data-bind="click: evts.onNewListClick"><i class="material-icons">add_circle</i></button>
+    <button class="new-list" data-bind="click: evts.onNewListClick">
+      <i class="material-icons">add_circle</i>
+    </button>
+
     <ul class="lists" data-bind="foreach: lists">
       <!-- Now we are in the context of a single TodoList instance -->
       <li data-bind="css: {'open': $data === $parent.openList()}">
-        <button data-bind="text: title, click: $parent.evts.onListClick"></button>
+        <button class="material-icons--after" data-bind="click: $parent.evts.onListClick,
+          attr: {'data-count': todoCount}">
+          <span data-bind="text: title"></span>
+        </button>
       </li>
     </ul>
   </div>
@@ -24,15 +30,19 @@
   <div class="list-container" data-bind="with: openList">
     <!-- Now we are in the context of a single TodoList instance -->
     <input type="text" placeholder="Title" data-bind="textInput: title"/>
-    <ul class="items">
-      <!-- ko foreach: items -->
-      <li class="item">
-        <input type="checkbox"/>
-        <input type="text"/>
+    <ul class="todos">
+      <!-- ko foreach: todos -->
+      <li class="todo" data-bind="css: {'done': done}">
+        <input type="checkbox" data-bind="checked: done"/>
+        <input type="text" data-bind="textInput: text"/>
+        <button class="remove" data-bind="click: $parent.evts.onRemoveTodoClick">
+          <i class="material-icons">remove_circle_outline</i>
+        </button>
       </li>
       <!-- /ko -->
-      <li class="new-item">
-        <input type="text"/>
+      <li class="todo new-todo" data-bind="with: newTodo">
+        <input type="text" data-bind="event: {keyup: $parent.evts.onNewTodoTextKeyDown},
+          textInput: text"/>
       </li>
     </ul>
   </div>
