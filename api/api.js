@@ -46,6 +46,11 @@ app.get('/lists/:identifier', (req, res) => {
 app.post('/lists/:identifier', (req, res) => {
   const hashedIdentifier = hash(req.params.identifier);
   console.log('set', req.params.identifier, req.body);
+  if (!req.body){
+    delete store[hashedIdentifier];
+    res.json({removed: true});
+    return;
+  }
   store[hashedIdentifier] = req.body;
   res.json({ok: true});
 });

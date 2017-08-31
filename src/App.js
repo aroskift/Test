@@ -10,7 +10,7 @@ class App{
     this.loginBox = loginBox;
     this.storageService = storageService;
 
-    this.isLoggedIn = observable(true);
+    this.isLoggedIn = observable(false);
 
     this.lists = observableArray();
     this.openList = observable();
@@ -55,6 +55,11 @@ class App{
   }
   onLogin(){
     this.isLoggedIn(true);
+    this.tryLoadState().then(() => {
+      this.setAutoSave(true);
+    }).catch(() => {
+      this.setAutoSave(true);
+    });
   }
 
   removeTodoList(todoList, confirmDelete = true){
@@ -75,14 +80,17 @@ class App{
     return this.storageService.get(this.hashUserPass).then((lists) => {
       const todoLists = lists.map(TodoList.fromData);
       this.lists(todoLists);
+      if (todoLists){
+        this.openList(todoLists[0]);
+      }
       return todoLists;
-    }).catch(err => {
-      this.setAutoSave(true);
     });
   }
   setAutoSave(enabled = true){
     if (enabled && !this.autoSaveSubscription){
-      this.autoSaveSubscription = this.listsData.subscribe(newData => this.saveState(newData));
+      this.autoSaveSubscription = this.listsData.subscribe(newData => {
+        this.saveState(newData);
+      });
       return;
     }
 
