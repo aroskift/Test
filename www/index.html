@@ -52,11 +52,15 @@
         </li>
         <!-- /ko -->
         <li class="todo new-todo" data-bind="with: newTodo">
-          <input type="text" data-bind="event: {keyup: $parent.evts.onNewTodoTextKeyDown},
+          <input type="text" placeholder="New todo item" data-bind="event: {keyup: $parent.evts.onNewTodoTextKeyDown},
             textInput: text"/>
         </li>
       </ul>
     </div>
+  </div>
+
+  <div class="toasts" data-bind="with: toasts">
+  </div>
 
   <script src="bundle.js"></script>
 </body>

@@ -10,10 +10,14 @@ class App{
     this.loginBox = loginBox;
     this.storageService = storageService;
 
-    this.isLoggedIn = observable(false);
+    this.isLoggedIn = observable(true);
 
     this.lists = observableArray();
     this.openList = observable();
+
+    this.listsData = computed(() => {
+      return this.lists().map(list => list.data);
+    }).extend({ rateLimit: { timeout: 1000, method: 'notifyWhenChangesStop'} });
 
     // Create a computed observable that uses isLoggedIn to determine the correct window title.
     this.windowTitle = computed(() => {
@@ -64,6 +68,30 @@ class App{
       this.openList(this.lists()[listIndex+1]);
     }
     this.lists.remove(todoList);
+  }
+
+  tryLoadState(){
+    this.setAutoSave(false);
+    return this.storageService.get(this.hashUserPass).then((lists) => {
+      const todoLists = lists.map(TodoList.fromData);
+      this.lists(todoLists);
+      return todoLists;
+    }).catch(err => {
+      this.setAutoSave(true);
+    });
+  }
+  setAutoSave(enabled = true){
+    if (enabled && !this.autoSaveSubscription){
+      this.autoSaveSubscription = this.listsData.subscribe(newData => this.saveState(newData));
+      return;
+    }
+
+    if (this.autoSaveSubscription){
+      this.autoSaveSubscription.dispose();
+    }
+  }
+  saveState(data){
+    return this.storageService.store(this.hashUserPass, data);
   }
 
   bind(){

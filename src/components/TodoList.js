@@ -55,5 +55,12 @@ export class TodoList{
     }
     this.todos.remove(todo);
   }
+
+  static fromData(data){
+    const config = Object.assign({}, data, {
+      todos: data.todos.map(todo => new Todo(todo))
+    });
+    return new TodoList(config);
+  }
 }
 export default TodoList;
