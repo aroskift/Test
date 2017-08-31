@@ -1,35 +1,23 @@
 {
   "name": "js-intro-course",
-  "version": "2.0.0",
-  "description": "Source code for Introductory course in basic JavaScript",
+  "version": "0.0.1",
+  "description": "",
   "main": "index.js",
-  "repository": "https://github.com/rudfoss/jsIntroCourse",
+  "keywords": [],
   "author": "Thomas Haugland Rudfoss",
-  "license": "MIT",
   "scripts": {
-    "eslint:watch": "esw --color -w ./**/*.js ",
+    "eslint:watch": "esw --color -w ./**/*.js",
     "eslint": "eslint --color ./**/*.js",
-    "start:api": "node api/api.js",
     "start:quietdev": "webpack-dev-server --quiet",
     "start:dev": "webpack-dev-server",
-    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:quietdev\" \"npm run start:api\"",
-    "check": "nsp check"
-  },
-  "dependencies": {
-    "body-parser": "^1.17.2",
-    "cors": "^2.8.4",
-    "express": "^4.15.4",
-    "helmet": "^3.8.1",
-    "knockout": "^3.4.2",
-    "nsp": "^2.7.0",
-    "sha512": "0.0.1"
+    "start": "concurrently --kill-others \"npm run eslint:watch\" \"npm run start:quietdev\""
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
     "concurrently": "^3.5.0",
-    "css-loader": "^0.28.5",
+    "css-loader": "^0.28.7",
     "eslint": "^4.5.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-watch": "^3.1.2",
@@ -38,5 +26,8 @@
     "style-loader": "^0.18.2",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
+  },
+  "dependencies": {
+    "knockout": "^3.4.2"
   }
 }

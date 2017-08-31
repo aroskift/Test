@@ -1,2 +1,0 @@
-JS - Intro Course Code
-----------------------

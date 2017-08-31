@@ -8,30 +8,17 @@
     body{opacity:0;}
   </style>
 </head>
-<body data-bind="css: {'ready': true, 'loggedin': isLoggedIn}">
-  <!-- Now we are in the context of the outermost model (the App instance) -->
-
-  <div class="loginbox" data-bind="with: loginBox">
-    <h1>Login</h1>
-    <p>Please enter your user name and password to log in</p>
-    <form data-bind="submit: $parent.evts.onLoginSubmit">
-      <input type="text" placeholder="User name" maxlength="64" data-bind="textInput: username"/>
-      <input type="password" placeholder="Password" maxlength="64" data-bind="textInput: password"/>
-      <input type="submit" value="Login" data-bind="disable: !hasTyped()"/>
-    </form>
-  </div>
+<body class="loggedin" data-bind="css: {'ready': true}">
 
   <div class="list-manager">
     <div class="lists-container">
-      <button class="new-list" data-bind="click: evts.onNewListClick">
+      <button class="new-list" data-bind="click: newList">
         <i class="material-icons">add_circle</i>
       </button>
 
       <ul class="lists" data-bind="foreach: lists">
-        <!-- Now we are in the context of a single TodoList instance -->
-        <li data-bind="css: {'open': $data === $parent.openList()}">
-          <button class="material-icons--after" data-bind="click: $parent.evts.onListClick,
-            attr: {'data-count': todoCount}">
+        <li data-bind="css: {'open': $parent.openList() === $data}">
+          <button class="material-icons--after" data-bind="click: $parent.evts.onListClick">
             <span data-bind="text: title"></span>
           </button>
         </li>
@@ -40,14 +27,13 @@
 
     <div class="list-container" data-bind="with: openList">
       <!-- Now we are in the context of a single TodoList instance -->
-      <input type="text" placeholder="Title" data-bind="textInput: title,
-        click: evts.onTitleClick"/>
+      <input type="text" placeholder="Title" data-bind="textInput: title"/>
       <ul class="todos">
         <!-- ko foreach: todos -->
-        <li class="todo" data-bind="css: {'done': done}, click: evts.onTodoClick">
+        <li class="todo" data-bind="css: {'done': done}">
           <input type="checkbox" data-bind="checked: done"/>
           <input type="text" data-bind="textInput: text"/>
-          <button class="remove" data-bind="click: $parent.evts.onRemoveTodoClick">
+          <button class="remove">
             <i class="material-icons">remove_circle_outline</i>
           </button>
         </li>

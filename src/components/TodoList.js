@@ -1,4 +1,4 @@
-import {observable, observableArray, unwrap} from 'knockout';
+import {observable, observableArray} from 'knockout';
 import Todo from './Todo';
 
 export class TodoList{
@@ -8,50 +8,28 @@ export class TodoList{
     this.newTodo = observable(new Todo());
 
     this.evts = {
-      onNewTodoTextKeyDown: (model, evt) => this.onNewTodoTextKeyDown(model, evt),
-      onRemoveTodoClick: (model) => this.removeTodo(model),
-      onTitleClick: (model, evt) => this.onTitleClick(evt)
-    };
-  }
-  
-  get todoCount(){
-    return unwrap(this.todos).length;
-  }
-  get data(){
-    return {
-      title: this.title(),
-      todos: this.todos().map(todo => todo.data)
+      onNewTodoTextKeyDown: (model, evt) => this.onNewTodoTextKeyDown(model, evt)
     };
   }
 
-  onTitleClick(evt){
-    if (evt.ctrlKey){
-      this.todos().map(todo => todo.toggleDone());
-    }
-  }
   onNewTodoTextKeyDown(todo, evt){
-    if (evt.key === 'Enter' && todo.text() !== ''){ // Ref: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+    if (evt.key === 'Enter' && todo.text() !== ''){
       const parent = evt.target.parentElement;
       this.addTodoFromNewTodo(todo);
-      parent.querySelector('input[type=text]').focus();
+      parent.querySelector('input').focus();
     } else if (evt.key === 'Backspace' && todo.text() === ''){
       this.removeLastTodo();
     }
     return true;
   }
-
   addTodoFromNewTodo(todo){
-    this.addTodo(todo);
+    this.todos.push(todo);
     this.newTodo(new Todo());
   }
-  addTodo(todo){
-    this.todos.push(todo);
-  }
-
   removeLastTodo(){
     const todos = this.todos();
     if (todos.length === 0) return;
-    this.removeTodo(todos[todos.length-1]);
+    this.removeTodo(todos[todos.length - 1]);
   }
   removeTodo(todo){
     if (!todo.done()){
@@ -60,13 +38,6 @@ export class TodoList{
       }
     }
     this.todos.remove(todo);
-  }
-
-  static fromData(data){
-    const config = Object.assign({}, data, {
-      todos: data.todos.map(todo => new Todo(todo))
-    });
-    return new TodoList(config);
   }
 }
 export default TodoList;

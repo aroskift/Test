@@ -1,117 +1,34 @@
-import {observable, observableArray, computed, applyBindings} from 'knockout';
-import StorageService from './services/StorageService';
-import LoginBox from './components/LoginBox';
+import {observable, observableArray, applyBindings} from 'knockout';
+
 import TodoList from './components/TodoList';
 
 import './App.scss';
 
+/**
+ * @field {observableArray<TodoList[]>} lists
+ */
 class App{
-  constructor({loginBox, storageService} = {}){
-    this.loginBox = loginBox;
-    this.storageService = storageService;
-
-    this.isLoggedIn = observable(false);
-
+  constructor(){
     this.lists = observableArray();
     this.openList = observable();
 
-    this.listsData = computed(() => {
-      return this.lists().map(list => list.data);
-    }).extend({ rateLimit: { timeout: 1000, method: 'notifyWhenChangesStop'} });
-
-    // Create a computed observable that uses isLoggedIn to determine the correct window title.
-    this.windowTitle = computed(() => {
-      const loginState = this.isLoggedIn();
-      if (!loginState){
-        return 'Todo - Login';
-      }
-      return 'Todo - '+this.loginBox.username();
-    });
-    this.windowTitle.subscribe(newTitle => document.title = newTitle);
-    this.windowTitle.notifySubscribers(this.windowTitle()); // Force the title to be correct by notifying our own subscriber
-
     this.evts = {
-      onNewListClick: (model, evt) => this.newList(),
-      onListClick: (model, evt) => this.selectOpenList(model, evt),
-      onLoginSubmit: (model) => this.onLogin()
+      onListClick: (model) => this.setOpenList(model)
     };
   }
-
-  get hashUserPass(){
-    return this.loginBox.hashCombo;
-  }
-
-  newList(model, evt){
-    const newList = new TodoList();
-    this.lists.push(newList);
-    this.openList(newList);
-  }
-  selectOpenList(todoList, evt){
-    if (evt.ctrlKey){
-      this.removeTodoList(todoList, !evt.shiftKey);
-      return;
-    }
+  
+  setOpenList(todoList){
     this.openList(todoList);
   }
-  onLogin(){
-    this.isLoggedIn(true);
-    this.tryLoadState().then(() => {
-      this.setAutoSave(true);
-    }).catch(() => {
-      this.setAutoSave(true);
-    });
-  }
-
-  removeTodoList(todoList, confirmDelete = true){
-    if (confirmDelete){
-      if (!confirm('Are you sure you want to delete this list?')){
-        return;
-      }
-    }
-    let listIndex = this.lists.indexOf(todoList);
-    if (this.openList() === todoList){
-      this.openList(this.lists()[listIndex+1]);
-    }
-    this.lists.remove(todoList);
-  }
-
-  tryLoadState(){
-    this.setAutoSave(false);
-    return this.storageService.get(this.hashUserPass).then((lists) => {
-      const todoLists = lists.map(TodoList.fromData);
-      this.lists(todoLists);
-      if (todoLists){
-        this.openList(todoLists[0]);
-      }
-      return todoLists;
-    });
-  }
-  setAutoSave(enabled = true){
-    if (enabled && !this.autoSaveSubscription){
-      this.autoSaveSubscription = this.listsData.subscribe(newData => {
-        this.saveState(newData);
-      });
-      return;
-    }
-
-    if (this.autoSaveSubscription){
-      this.autoSaveSubscription.dispose();
-    }
-  }
-  saveState(data){
-    return this.storageService.store(this.hashUserPass, data);
-  }
-
-  bind(){
-    applyBindings(this);
-    return this;
+  newList(){
+    const newList = new TodoList();
+    this.lists.push(newList);
   }
 
   static start(){
-    return new App({
-      loginBox: new LoginBox(),
-      storageService: new StorageService()
-    }).bind();
+    const app = new App();
+    applyBindings(app);
+    return app;
   }
 }
 window._app = App.start();
