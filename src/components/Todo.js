@@ -14,6 +14,7 @@ export class Todo{
     if (evt.ctrlKey){
       this.done(!this.done());
     }
+    return true;
   }
   
   get data(){

@@ -53,7 +53,7 @@
         </li>
         <!-- /ko -->
         <li class="todo new-todo" data-bind="with: newTodo">
-          <input type="text" placeholder="New todo item" data-bind="event: {keyup: $parent.evts.onNewTodoTextKeyDown},
+          <input type="text" placeholder="New todo item" data-bind="event: {keydown: $parent.evts.onNewTodoTextKeyDown},
             textInput: text"/>
         </li>
       </ul>

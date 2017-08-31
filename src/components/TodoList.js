@@ -30,11 +30,11 @@ export class TodoList{
     }
   }
   onNewTodoTextKeyDown(todo, evt){
-    if (evt.key === 'Enter'){ // Ref: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
+    if (evt.key === 'Enter' && todo.text() !== ''){ // Ref: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
       const parent = evt.target.parentElement;
       this.addTodoFromNewTodo(todo);
       parent.querySelector('input[type=text]').focus();
-    } else if (evt.key === 'Backspace'){
+    } else if (evt.key === 'Backspace' && todo.text() === ''){
       this.removeLastTodo();
     }
     return true;
