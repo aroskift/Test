@@ -40,10 +40,11 @@
 
     <div class="list-container" data-bind="with: openList">
       <!-- Now we are in the context of a single TodoList instance -->
-      <input type="text" placeholder="Title" data-bind="textInput: title"/>
+      <input type="text" placeholder="Title" data-bind="textInput: title,
+        click: evts.onTitleClick"/>
       <ul class="todos">
         <!-- ko foreach: todos -->
-        <li class="todo" data-bind="css: {'done': done}">
+        <li class="todo" data-bind="css: {'done': done}, click: evts.onTodoClick">
           <input type="checkbox" data-bind="checked: done"/>
           <input type="text" data-bind="textInput: text"/>
           <button class="remove" data-bind="click: $parent.evts.onRemoveTodoClick">
@@ -59,7 +60,7 @@
     </div>
   </div>
 
-  <div class="toasts" data-bind="with: toasts">
+  <div class="toasts">
   </div>
 
   <script src="bundle.js"></script>

@@ -9,7 +9,8 @@ export class TodoList{
 
     this.evts = {
       onNewTodoTextKeyDown: (model, evt) => this.onNewTodoTextKeyDown(model, evt),
-      onRemoveTodoClick: (model) => this.removeTodo(model)
+      onRemoveTodoClick: (model) => this.removeTodo(model),
+      onTitleClick: (model, evt) => this.onTitleClick(evt)
     };
   }
   
@@ -23,6 +24,11 @@ export class TodoList{
     };
   }
 
+  onTitleClick(evt){
+    if (evt.ctrlKey){
+      this.todos().map(todo => todo.toggleDone());
+    }
+  }
   onNewTodoTextKeyDown(todo, evt){
     if (evt.key === 'Enter'){ // Ref: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
       const parent = evt.target.parentElement;

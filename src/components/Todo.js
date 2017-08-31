@@ -4,6 +4,16 @@ export class Todo{
   constructor({text = '', done = false} = {}){
     this.text = observable(text);
     this.done = observable(done);
+
+    this.evts = {
+      onTodoClick: (model, evt) => this.onTodoClick(evt)
+    };
+  }
+
+  onTodoClick(evt){
+    if (evt.ctrlKey){
+      this.done(!this.done());
+    }
   }
   
   get data(){
@@ -15,6 +25,9 @@ export class Todo{
 
   toggleDone(){
     this.done(!this.done());
+  }
+  setDone(flag){
+    this.done(flag);
   }
 }
 export default Todo;
