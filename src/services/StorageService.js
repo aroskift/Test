@@ -6,21 +6,21 @@ export class StorageService{
   getEndpoint(op){
     return this.endpoint+'/'+op;
   }
-  store(identifier, rawLists){
-    return this.fetchJson(this.getEndpoint('lists/'+identifier), rawLists);
+  async store(identifier, rawLists){
+    return await this.fetchJson(this.getEndpoint('lists/'+identifier), rawLists);
   }
-  get(identifier){
-    return this.fetchJson(this.getEndpoint('lists/'+identifier));
+  async get(identifier){
+    return await this.fetchJson(this.getEndpoint('lists/'+identifier));
   }
-  list(){
-    return this.fetchJson(this.getEndpoint('lists')).catch(err => {
-      if (err.status === 404){
-        return [];
-      }
-    });
+  async list(){
+    try {
+      return await this.fetchJson(this.getEndpoint('lists'));
+    } catch (err){
+      if (err.status === 404) return [];
+    }
   }
 
-  fetchJson(url, body){
+  async fetchJson(url, body){
     let request = {
       method: 'GET'
     };
@@ -34,17 +34,13 @@ export class StorageService{
         body: JSON.stringify(body)
       });
     }
-    return fetch(url, request)
-      .then(res => {
-        if (!res.ok){
-          throw res;
-        }
-        return res.json();
-      })
-      .catch(err => {
-        //console.error('FETCH ERROR', err); // Uncomment this line to log the error to console.
-        throw err;
-      });
+
+    const res = await fetch(url, request);
+    if (!res.ok){
+      throw res;
+    }
+    
+    return await res.json();
   }
 }
 export default StorageService;
