@@ -53,13 +53,13 @@ class App{
     }
     this.openList(todoList);
   }
-  onLogin(){
+  async onLogin(){
     this.isLoggedIn(true);
-    this.tryLoadState().then(() => {
+    try {
+      await this.tryLoadState();
+    } finally {
       this.setAutoSave(true);
-    }).catch(() => {
-      this.setAutoSave(true);
-    });
+    }
   }
 
   removeTodoList(todoList, confirmDelete = true){
@@ -75,16 +75,15 @@ class App{
     this.lists.remove(todoList);
   }
 
-  tryLoadState(){
+  async tryLoadState(){
     this.setAutoSave(false);
-    return this.storageService.get(this.hashUserPass).then((lists) => {
-      const todoLists = lists.map(TodoList.fromData);
-      this.lists(todoLists);
-      if (todoLists){
-        this.openList(todoLists[0]);
-      }
-      return todoLists;
-    });
+    const lists = await this.storageService.get(this.hashUserPass);
+    const todoLists = lists.map(TodoList.fromData);
+    this.lists(todoLists);
+    if (todoLists){
+      this.openList(todoLists[0]);
+    }
+    return todoLists;
   }
   setAutoSave(enabled = true){
     if (enabled && !this.autoSaveSubscription){
@@ -98,8 +97,8 @@ class App{
       this.autoSaveSubscription.dispose();
     }
   }
-  saveState(data){
-    return this.storageService.store(this.hashUserPass, data);
+  async saveState(data){
+    return await this.storageService.store(this.hashUserPass, data);
   }
 
   bind(){
