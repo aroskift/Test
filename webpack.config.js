@@ -2,7 +2,10 @@ const path = require('path');
 
 module.exports = {
   devtool: 'source-map',
-  entry: './src/App.js',
+  entry: [
+    'babel-polyfill',
+    './src/App.js'
+  ],
   output: {
     filename: 'bundle.js',
     publicPath: '/'

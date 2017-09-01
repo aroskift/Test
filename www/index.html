@@ -8,7 +8,17 @@
     body{opacity:0;}
   </style>
 </head>
-<body class="loggedin" data-bind="css: {'ready': true}">
+<body data-bind="css: {'ready': true, 'loggedin': isLoggedIn}">
+
+  <div class="loginbox" data-bind="with: loginBox">
+    <h1>Login</h1>
+    <p>Please enter your user name and password to log in</p>
+    <form data-bind="submit: $parent.evts.onLoginSubmit">
+      <input type="text" placeholder="User name" maxlength="64" data-bind="textInput: username"/>
+      <input type="password" placeholder="Password" maxlength="64" data-bind="textInput: password"/>
+      <input type="submit" value="Login" data-bind="disable: !hasTyped()"/>
+    </form>
+  </div>
 
   <div class="list-manager">
     <div class="lists-container">
@@ -30,10 +40,10 @@
       <input type="text" placeholder="Title" data-bind="textInput: title"/>
       <ul class="todos">
         <!-- ko foreach: todos -->
-        <li class="todo" data-bind="css: {'done': done}">
+        <li class="todo" data-bind="css: {'done': done}, click: evts.onTodoClick">
           <input type="checkbox" data-bind="checked: done"/>
           <input type="text" data-bind="textInput: text"/>
-          <button class="remove">
+          <button class="remove" data-bind="click: $parent.evts.onRemoveClick">
             <i class="material-icons">remove_circle_outline</i>
           </button>
         </li>

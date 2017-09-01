@@ -8,7 +8,15 @@ export class TodoList{
     this.newTodo = observable(new Todo());
 
     this.evts = {
-      onNewTodoTextKeyDown: (model, evt) => this.onNewTodoTextKeyDown(model, evt)
+      onNewTodoTextKeyDown: (model, evt) => this.onNewTodoTextKeyDown(model, evt),
+      onRemoveClick: (model) => this.removeTodo(model)
+    };
+  }
+
+  getData(){
+    return {
+      title: this.title(),
+      todos: this.todos().map(todo => todo.getData())
     };
   }
 
@@ -38,6 +46,17 @@ export class TodoList{
       }
     }
     this.todos.remove(todo);
+  }
+
+  static fromData(rawList){
+    const config = Object.assign(
+      {}, 
+      rawList, 
+      {
+        todos: rawList.todos.map(todo => new Todo(todo))
+      }
+    );
+    return new TodoList(config);
   }
 }
 export default TodoList;
