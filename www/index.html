@@ -31,7 +31,7 @@
         <!-- Now we are in the context of a single TodoList instance -->
         <li data-bind="css: {'open': $data === $parent.openList()}">
           <button class="material-icons--after" data-bind="click: $parent.evts.onListClick,
-            attr: {'data-count': todoCount}">
+            attr: {'data-count': todoCount}" title="Ctrl+Click to remove, Ctrl+Shift+Click to force remove">
             <span data-bind="text: title"></span>
           </button>
         </li>
@@ -41,10 +41,10 @@
     <div class="list-container" data-bind="with: openList">
       <!-- Now we are in the context of a single TodoList instance -->
       <input type="text" placeholder="Title" data-bind="textInput: title,
-        click: evts.onTitleClick"/>
+        click: evts.onTitleClick" title="Ctrl+Click to toggle done on all items"/>
       <ul class="todos">
         <!-- ko foreach: todos -->
-        <li class="todo" data-bind="css: {'done': done}, click: evts.onTodoClick">
+        <li class="todo" data-bind="css: {'done': done}, click: evts.onTodoClick" title="Ctrl+Click to toggle done">
           <input type="checkbox" data-bind="checked: done"/>
           <input type="text" data-bind="textInput: text"/>
           <button class="remove" data-bind="click: $parent.evts.onRemoveTodoClick">
