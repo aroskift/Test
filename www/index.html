@@ -2,93 +2,10 @@
 <html>
 <head>
   <title>Todo App</title>
-  <!-- Here we reference some external resource for styling, namely two stylesheets for using web fonts.
-  The first includes the Roboto font while the seconds is an icon font used for our icons. -->
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-  <!-- This style tag is a simple fix for the problem of having the browser render out unprocessed html.
-  This occurs because the browser parses and displays the content before our app and knockout has a chance
-  to remove what should not be there and process stuff. Setting opacity:0 and only restoring it to 1 once
-  the 'ready' class is applied to body ensures that space for our app is reserved while not actually
-  displaying anything. -->
-  <style>
-    body{opacity:0;}
-  </style>
 </head>
-<!-- Begin by binding a class on body that will be immediately applied once our app starts. -->
-<body data-bind="css: {'ready': true, 'loggedin': isLoggedIn}">
-  <!-- Now we are in the context of the outermost model (the App instance) -->
 
-  <!-- This div servers as a container for everything related to the login box.
-  The 'with' control flow binding also changes the context inside this div to the loginBox object-->
-  <div class="loginbox" data-bind="with: loginBox">
-    <h1>Login</h1>
-    <p>Please enter your user name and password to log in</p>
-    <form data-bind="submit: $parent.evts.onLoginSubmit">
-      <input type="text" placeholder="User name" maxlength="64" data-bind="textInput: username"/>
-      <input type="password" placeholder="Password" maxlength="64" data-bind="textInput: password"/>
-      <input type="submit" value="Login" data-bind="disable: !hasTyped()"/>
-    </form>
-  </div>
-
-  <!-- This div is the container for everything related to the actual todo application
-  Here we do not change the context since everthing we need is still on the App instance. -->
-  <div class="list-manager">
-    <div class="lists-container">
-      <button class="new-list" data-bind="click: evts.onNewListClick">
-        <i class="material-icons">add_circle</i>
-      </button>
-
-      <ul class="lists" data-bind="foreach: lists">
-        <!-- Now we are in the context of a single TodoList instance -->
-        <li data-bind="css: {'open': $data === $parent.openList()}">
-          <!-- This button has click handlers, but they need to reference the parent context (we changed context with the 
-          'foreach' control flow binding above). To do this we use the "magic" knockout variable $parent which gives us access
-          to the parent context of this one. In this case that would be the app instance. Knockout provides additional magic
-          variables for you to use including: $root (always references the top context), $parents (an array of ancestor contexts),
-          $data (direct reference to this context in this case the TodoList instance) -->
-          <button class="material-icons--after" data-bind="click: $parent.evts.onListClick,
-            attr: {'data-count': todoCount}" title="Ctrl+Click to remove, Ctrl+Shift+Click to force remove">
-            <span data-bind="text: title"></span>
-          </button>
-        </li>
-      </ul>
-    </div>
-
-    <div class="list-container" data-bind="with: openList">
-      <!-- Now we are in the context of a single TodoList instance -->
-      <input type="text" placeholder="Title" data-bind="textInput: title,
-        click: evts.onTitleClick" title="Ctrl+Click to toggle done on all items"/>
-      <ul class="todos">
-        <!-- Why not use a data-bind with foreach on the ul element directly?
-        This is because we want an additional item directly below every todo instance where you can enter the new todo text.
-        If we looped on the ul it would also be repeated for every todo item in the list.
-        For more information check out "Note 4" on this page: http://knockoutjs.com/documentation/foreach-binding.html -->
-
-        <!-- ko foreach: todos -->
-        <!-- Now we are in the context of a single todo instance. The context tree looks like this: app -> todoList -> todo -->
-        <li class="todo" data-bind="css: {'done': done}, click: evts.onTodoClick" title="Ctrl+Click to toggle done">
-          <input type="checkbox" data-bind="checked: done"/>
-          <input type="text" data-bind="textInput: text"/>
-          <button class="remove" data-bind="click: $parent.evts.onRemoveTodoClick">
-            <i class="material-icons">remove_circle_outline</i>
-          </button>
-        </li>
-        <!-- /ko -->
-        <!-- Because we always want the "new todo" item to be present we have to move it outside the foreach loop above. -->
-        <li class="todo new-todo" data-bind="with: newTodo">
-          <input type="text" placeholder="New todo item" data-bind="event: {keydown: $parent.evts.onNewTodoTextKeyDown},
-            textInput: text"/>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- At last we include the script file. The reason for this being at the bottom of the page instead of at the top or
-  in the head is that the browser stops parsing the HTML while the script loads and executes. If we do anything inside the 
-  script that needs to manipulate the elements in the document they have to be loaded. By placing the reference at the bottom
-  we ensure that the script will execute after all the HTML has been parsed and the DOM created. -->
-  <script src="bundle.js"></script>
+<body>
 </body>
 </html>
